@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GTA Gallery</title>
+    <!-- Добавляем Font Awesome для иконок (Telegram, Instagram, YouTube) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* Основные стили сайта */
         body {
@@ -42,7 +44,7 @@
             position: relative;
             width: 100%;
             max-width: 900px;
-            margin: 80px auto 60px;
+            margin: 80px auto 100px; /* Увеличили нижний margin для места под иконками */
             padding: 0 20px;
             box-sizing: border-box;
         }
@@ -129,30 +131,6 @@
             80% { transform: translate(2px, -2px); }
         }
 
-        /* Стрелки */
-        .prev, .next {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: none;
-            width: 70px;
-            height: 70px;
-            font-size: 40px;
-            cursor: pointer;
-            border-radius: 50%;
-            backdrop-filter: blur(10px);
-            z-index: 10;
-        }
-
-        @media (max-width: 768px) {
-            .prev, .next { width: 80px; height: 80px; font-size: 50px; }
-        }
-
-        .prev { left: 10px; }
-        .next { right: 10px; }
-
         .dots {
             position: absolute;
             top: -50px;
@@ -189,7 +167,37 @@
             z-index: 20;
         }
 
-        /* === ЗАГРУЗОЧНЫЙ ЭКРАН === */
+        /* Социальные иконки внизу */
+        .social-icons {
+            position: fixed;
+            bottom: 60px; /* Над футером */
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 20;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 36px;
+            margin: 0 20px;
+            opacity: 0.8;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
+        .social-icons a:hover {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 768px) {
+            .social-icons a {
+                font-size: 28px;
+                margin: 0 15px;
+            }
+        }
+
+        /* === ЗАГРУЗОЧНЫЙ ЭКРАН (оптимизированный для мобильных) === */
         #loader {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -203,14 +211,24 @@
 
         .wanted-stars {
             display: flex;
-            gap: 40px;
-            font-size: 120px;
+            gap: 20px; /* Уменьшили gap */
+            font-size: 100px; /* Уменьшили размер для десктопа */
+            flex-wrap: wrap; /* Если не помещается — перенос на новую строку */
+            justify-content: center;
+            max-width: 90%; /* Ограничение ширины */
         }
 
         @media (max-width: 768px) {
             .wanted-stars {
-                font-size: 80px;
-                gap: 20px;
+                font-size: 60px; /* Ещё меньше для мобильных */
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .wanted-stars {
+                font-size: 50px; /* Для очень маленьких экранов */
+                gap: 8px;
             }
         }
 
@@ -266,9 +284,6 @@
     </header>
 
     <div class="carousel">
-        <button class="prev" onclick="moveSlide(-1)">‹</button>
-        <button class="next" onclick="moveSlide(1)">›</button>
-
         <div class="dots" id="dotsContainer"></div>
 
         <div class="carousel-container">
@@ -287,12 +302,19 @@
         </div>
     </div>
 
+    <!-- Социальные иконки -->
+    <div class="social-icons">
+        <a href="#" target="_blank" title="Telegram"><i class="fab fa-telegram-plane"></i></a>
+        <a href="#" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="#" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+    </div>
+
     <footer>
         © 2026 Твоё имя | Rockstar Games
     </footer>
 
     <script>
-        /* === ЛОГИКА КАРУСЕЛИ === */
+        /* === ЛОГИКА КАРУСЕЛИ (только свайпы, без стрелок) === */
         let currentIndex = 0;
         const items = document.querySelectorAll('.carousel-item');
         const total = items.length;
@@ -337,7 +359,7 @@
             triggerGTAEffect();
         }
 
-        // Свайпы на мобильных
+        // Свайпы на мобильных (и десктопе — для тачпадов)
         let touchStartX = 0;
         document.querySelector('.carousel-container').addEventListener('touchstart', e => {
             touchStartX = e.touches[0].clientX;
