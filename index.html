@@ -43,15 +43,17 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            aspect-ratio: auto;
+        }
+
+        .carousel-slide {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .carousel-item {
-            position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
-            height: 100%;
             opacity: 0;
             transition: opacity 0.5s ease;
             display: flex;
@@ -60,26 +62,29 @@
         }
 
         .carousel-item.active {
-            position: relative;
             opacity: 1;
         }
 
         .carousel-item img {
             max-width: 100%;
-            max-height: 100vh;
-            height: auto;
+            max-height: 85vh; /* Основная адаптация: не выше 85% экрана */
             width: auto;
+            height: auto;
             object-fit: contain;
             border-radius: 28px;
             display: block;
         }
 
-        .swipe-overlay {
+        /* Эффекты GTA */
+        .swipe-overlay, .glitch {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+        }
+
+        .swipe-overlay {
             background: linear-gradient(to right, transparent 50%, rgba(255,255,255,0.1) 50%);
             background-size: 200% 100%;
-            pointer-events: none;
             opacity: 0;
             z-index: 5;
         }
@@ -95,8 +100,6 @@
         }
 
         .glitch {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
             background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.03) 10px, rgba(255,255,255,0.03) 20px);
             opacity: 0;
             mix-blend-mode: overlay;
@@ -175,6 +178,9 @@
             .carousel {
                 padding: 10px 5px 120px;
             }
+            .carousel-item img {
+                max-height: 80vh;
+            }
             .dot {
                 width: 10px;
                 height: 10px;
@@ -198,6 +204,9 @@
                 width: 8px;
                 height: 8px;
                 margin: 0 5px;
+            }
+            .carousel-item img {
+                max-height: 75vh;
             }
         }
 
@@ -279,7 +288,7 @@
             <div class="swipe-overlay" id="swipeOverlay"></div>
             <div class="glitch" id="glitch"></div>
 
-            <div class="carousel-slide" id="slideContainer">
+            <div class="carousel-slide">
                 <div class="carousel-item active"><img src="images/gta1.JPG" alt="Photo 1"></div>
                 <div class="carousel-item"><img src="images/gta2.JPG" alt="Photo 2"></div>
                 <div class="carousel-item"><img src="images/gta3.JPG" alt="Photo 3"></div>
@@ -382,7 +391,7 @@
             touchStartX = 0;
         });
 
-        // Поддержка мыши для ПК (клики по бокам)
+        // Клик по бокам на ПК
         container.addEventListener('click', e => {
             unlockAudio();
             const rect = container.getBoundingClientRect();
