@@ -44,12 +44,12 @@
             flex: 1;
             position: relative;
             width: 100%;
-            margin: 70px 0 120px;
+            margin: 70px 0 130px;
             padding: 0 10px;
             box-sizing: border-box;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
         }
 
         .carousel-container {
@@ -59,7 +59,10 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
             width: 100%;
             max-width: 900px;
-            transition: height 0.5s ease;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .carousel-item {
@@ -67,8 +70,12 @@
             top: 0;
             left: 0;
             width: 100%;
+            height: 100%;
             opacity: 0;
             transition: opacity 0.5s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .carousel-item.active {
@@ -77,10 +84,13 @@
         }
 
         .carousel-item img {
-            width: 100%;
+            max-width: 100%;
+            max-height: 100%;
             height: auto;
-            display: block;
+            width: auto;
+            object-fit: contain; /* Картинка помещается полностью, без обрезки */
             border-radius: 28px;
+            display: block;
         }
 
         .swipe-overlay {
@@ -148,7 +158,7 @@
 
         .social-icons {
             position: fixed;
-            bottom: 50px;
+            bottom: 60px;
             left: 0;
             right: 0;
             text-align: center;
@@ -287,7 +297,7 @@
         © 2026 Prokazin | Rockstar Games
     </footer>
 
-    <!-- Твой собственный звук выстрела -->
+    <!-- Твой звук выстрела (загрузи в папку sounds/gunshot.mp3) -->
     <audio id="swipeSound" src="sounds/gunshot.mp3" preload="auto"></audio>
 
     <script>
@@ -298,6 +308,22 @@
         const swipeOverlay = document.getElementById('swipeOverlay');
         const glitch = document.getElementById('glitch');
         const swipeSound = document.getElementById('swipeSound');
+
+        let audioUnlocked = false;
+
+        // Разблокировка звука после первого взаимодействия (обязательно для мобильных)
+        function unlockAudio() {
+            if (!audioUnlocked) {
+                swipeSound.play().then(() => {
+                    swipeSound.pause();
+                    swipeSound.currentTime = 0;
+                    audioUnlocked = true;
+                }).catch(() => {});
+            }
+        }
+
+        document.body.addEventListener('touchstart', unlockAudio, { once: true });
+        document.body.addEventListener('click', unlockAudio, { once: true });
 
         swipeSound.volume = 0.6;
 
@@ -318,8 +344,10 @@
         function triggerGTAEffect() {
             swipeOverlay.classList.add('active');
             glitch.classList.add('active');
-            swipeSound.currentTime = 0;
-            swipeSound.play().catch(() => {});
+            if (audioUnlocked) {
+                swipeSound.currentTime = 0;
+                swipeSound.play();
+            }
             setTimeout(() => {
                 swipeOverlay.classList.remove('active');
                 glitch.classList.remove('active');
@@ -342,6 +370,7 @@
         let touchStartX = 0;
         document.querySelector('.carousel-container').addEventListener('touchstart', e => {
             touchStartX = e.touches[0].clientX;
+            unlockAudio(); // Разблокировка при первом свайпе
         });
 
         document.querySelector('.carousel-container').addEventListener('touchend', e => {
