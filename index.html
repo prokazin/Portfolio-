@@ -8,6 +8,7 @@
           integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
           crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
+        * { box-sizing: border-box; }
         body {
             margin: 0;
             padding: 0;
@@ -25,9 +26,7 @@
             flex: 1;
             position: relative;
             width: 100%;
-            margin: 20px 0 130px; /* Больше места сверху после удаления header */
-            padding: 0 10px;
-            box-sizing: border-box;
+            padding: 20px 10px 130px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -44,6 +43,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            aspect-ratio: auto;
         }
 
         .carousel-item {
@@ -66,7 +66,7 @@
 
         .carousel-item img {
             max-width: 100%;
-            max-height: 100vh; /* Ограничение по высоте экрана */
+            max-height: 100vh;
             height: auto;
             width: auto;
             object-fit: contain;
@@ -114,7 +114,7 @@
 
         .dots {
             position: absolute;
-            top: -40px;
+            top: -50px;
             left: 0;
             right: 0;
             text-align: center;
@@ -123,9 +123,9 @@
 
         .dot {
             display: inline-block;
-            width: 10px;
-            height: 10px;
-            margin: 0 6px;
+            width: 12px;
+            height: 12px;
+            margin: 0 8px;
             background: rgba(255,255,255,0.5);
             border-radius: 50%;
             cursor: pointer;
@@ -139,7 +139,7 @@
 
         .social-icons {
             position: fixed;
-            bottom: 60px;
+            bottom: 70px;
             left: 0;
             right: 0;
             text-align: center;
@@ -148,8 +148,8 @@
 
         .social-icons a {
             color: white;
-            font-size: 30px;
-            margin: 0 18px;
+            font-size: 36px;
+            margin: 0 24px;
             opacity: 0.8;
             transition: opacity 0.3s, transform 0.3s;
         }
@@ -159,11 +159,6 @@
             transform: scale(1.2);
         }
 
-        @media (max-width: 768px) {
-            .social-icons a { font-size: 26px; margin: 0 14px; }
-            .dot { width: 8px; height: 8px; margin: 0 5px; }
-        }
-
         footer {
             position: fixed;
             bottom: 10px;
@@ -171,10 +166,42 @@
             right: 0;
             text-align: center;
             opacity: 0.8;
-            font-size: 0.8em;
+            font-size: 0.9em;
             z-index: 20;
         }
 
+        /* Адаптация под мобильные */
+        @media (max-width: 768px) {
+            .carousel {
+                padding: 10px 5px 120px;
+            }
+            .dot {
+                width: 10px;
+                height: 10px;
+                margin: 0 6px;
+            }
+            .social-icons a {
+                font-size: 30px;
+                margin: 0 18px;
+            }
+            footer {
+                font-size: 0.8em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .social-icons a {
+                font-size: 28px;
+                margin: 0 15px;
+            }
+            .dot {
+                width: 8px;
+                height: 8px;
+                margin: 0 5px;
+            }
+        }
+
+        /* Загрузочный экран */
         #loader {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -288,10 +315,6 @@
 
         function unlockAudio() {
             if (audioUnlocked) return;
-            const temp = new Audio();
-            temp.play().then(() => {
-                audioUnlocked = true;
-            }).catch(() => {});
             swipeSound.play().then(() => {
                 swipeSound.pause();
                 swipeSound.currentTime = 0;
@@ -359,6 +382,18 @@
             touchStartX = 0;
         });
 
+        // Поддержка мыши для ПК (клики по бокам)
+        container.addEventListener('click', e => {
+            unlockAudio();
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            if (x < rect.width / 2) {
+                moveSlide(-1);
+            } else {
+                moveSlide(1);
+            }
+        });
+
         document.body.addEventListener('click', unlockAudio, { once: true });
 
         window.addEventListener('load', () => {
@@ -372,8 +407,8 @@
             ];
 
             let currentStar = 0;
-            const durationPerStar = 500; /* Уменьшено с 1200 до 500 мс */
-            const minDuration = 2500; /* Общая минимальная длительность ~3 сек */
+            const durationPerStar = 500;
+            const minDuration = 2500;
             const startTime = Date.now();
 
             const lightUpStar = () => {
@@ -391,7 +426,7 @@
                 }
             };
 
-            setTimeout(lightUpStar, 400); /* Начальная задержка уменьшена */
+            setTimeout(lightUpStar, 400);
         });
     </script>
 </body>
