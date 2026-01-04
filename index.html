@@ -21,29 +21,11 @@
             touch-action: pan-y;
         }
 
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            text-align: center;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            z-index: 20;
-        }
-
-        h1 {
-            font-size: 1.8em;
-            margin: 0;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-        }
-
         .carousel {
             flex: 1;
             position: relative;
             width: 100%;
-            margin: 70px 0 130px;
+            margin: 20px 0 130px; /* Больше места сверху после удаления header */
             padding: 0 10px;
             box-sizing: border-box;
             display: flex;
@@ -84,7 +66,7 @@
 
         .carousel-item img {
             max-width: 100%;
-            max-height: 100%;
+            max-height: 100vh; /* Ограничение по высоте экрана */
             height: auto;
             width: auto;
             object-fit: contain;
@@ -178,7 +160,6 @@
         }
 
         @media (max-width: 768px) {
-            h1 { font-size: 1.6em; }
             .social-icons a { font-size: 26px; margin: 0 14px; }
             .dot { width: 8px; height: 8px; margin: 0 5px; }
         }
@@ -264,10 +245,6 @@
         </div>
     </div>
 
-    <header>
-        <h1>Prokazin Gallery</h1>
-    </header>
-
     <div class="carousel">
         <div class="dots" id="dotsContainer"></div>
 
@@ -309,7 +286,6 @@
 
         let audioUnlocked = false;
 
-        // Принудительная разблокировка аудио (работает в Chrome/Firefox/Android)
         function unlockAudio() {
             if (audioUnlocked) return;
             const temp = new Audio();
@@ -370,7 +346,7 @@
 
         container.addEventListener('touchstart', e => {
             touchStartX = e.touches[0].clientX;
-            unlockAudio(); // Разблокировка при первом касании
+            unlockAudio();
         });
 
         container.addEventListener('touchend', e => {
@@ -383,7 +359,6 @@
             touchStartX = 0;
         });
 
-        // Дополнительно: разблокировка по клику (для десктопа/мыши)
         document.body.addEventListener('click', unlockAudio, { once: true });
 
         window.addEventListener('load', () => {
@@ -397,8 +372,8 @@
             ];
 
             let currentStar = 0;
-            const durationPerStar = 1200;
-            const minDuration = 4000;
+            const durationPerStar = 500; /* Уменьшено с 1200 до 500 мс */
+            const minDuration = 2500; /* Общая минимальная длительность ~3 сек */
             const startTime = Date.now();
 
             const lightUpStar = () => {
@@ -416,7 +391,7 @@
                 }
             };
 
-            setTimeout(lightUpStar, 800);
+            setTimeout(lightUpStar, 400); /* Начальная задержка уменьшена */
         });
     </script>
 </body>
